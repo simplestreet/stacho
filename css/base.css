@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+/* Reset
+------------------------------------------------------------*/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,form,fieldset,input,textarea,p,blockquote,th,td {
+	margin: 0;
+	padding: 0;
+}
+h1,h2,h3,h4,h5,h6 { font-size: 100%; }
+address,em { font-style: normal; }
+strong,th { font-weight: normal; }
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+th { text-align: left; }
+hr,legend { display: none;	}
+img,fieldset { border: 0; }
+img { vertical-align: bottom; }
+li { list-style-type: none; }
+
+/* Fonts
+------------------------------------------------------------*/
+body {
+	font-size: 62.5%; /* 10px相当に設定 */
+	font-family: "ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","メイリオ",Meiryo,Osaka,"ＭＳ Ｐゴシック","MS PGothic",Sans-Serif;
+}
+
+/* clearfix
+------------------------------------------------------------*/
+.clearfix:after {
+	content: '';
+	display: block;
+	clear: both;
+	height:0;
+}
+.clearfix { /zoom: 1; } /* IE */
