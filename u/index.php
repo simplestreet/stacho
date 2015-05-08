@@ -255,7 +255,6 @@ function headline_display($str) {
 	$from = $offset + 1;
 	$to =($offset + MEDIAS_PER_PAGE) < $total ? ($offset + MEDIAS_PER_PAGE) : $total;
 	
-	
 	$dbh = null;
 	
 	//月別、日別、tagsの統計情報をSESSIONより取得
@@ -275,7 +274,7 @@ function headline_display($str) {
 <html>
 <head>
 <meta charset="utf-8">
-<title>stacho</title>
+<title>Stacho</title>
 <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="../css/base.css" rel="stylesheet" type="text/css">
 <link href="../css/common.css" rel="stylesheet" type="text/css">
@@ -312,7 +311,7 @@ function headline_display($str) {
 <div id="container">
   <div id="header" class="clearfix">
     <div class="header-inner">
-      <h1><a href="../"><img src="../images/stacho_logo.png" width="140" height="" alt="Stacho"></a></h1>
+      <h1><a href="<?php echo h(SITE_URL);?>"><img src="../images/stacho_logo.png" width="140" height="" alt="Stacho"></a></h1>
       <p><a href="logout.php">logout</a></p>
     </div>
     <!--		<p><?php echo h($_SERVER["REQUEST_URI"]); ?></p>
@@ -338,9 +337,17 @@ function headline_display($str) {
           <li class="posts"><span class="number"><?php echo h($userdetail->counts->media); ?></span> posts</li>
           <li class="follower"><a href="" style="cursor:default;"><span class="number"><?php echo h($userdetail->counts->followed_by); ?></span> follower</a></li>
           <li class="following"><a href="" style="cursor:default;"><span class="number"><?php echo h($userdetail->counts->follows); ?></span> following</a></li>
+          <li class="like"><a href="./like.php"><i class="fa fa-heart fa-4x"></i></a></li>
         </ul>
       </div>
       <!-- /#userprofile --></div>
+    <!-- <div id="page-nav">
+    	<?php if(!empty($_GET['word']) || !empty($_GET['tag']) || !empty($_GET['day']) || !empty($_GET['mon'])) :?>
+    	<p>link</p>
+    	<?php else: ?>
+    	<p><a href="<?php echo h(SITE_URL)?>">Home</a> / <??></p>
+    	<?php endif; ?>
+    </div> -->
     <div id="main" class="clearfix
     ">
       <div id="mainContents">
