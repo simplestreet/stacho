@@ -32,7 +32,12 @@ if (empty($_SESSION['user'])){
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script>
 		$(function(){
-		
+			var agent = navigator.userAgent;
+			if(agent.search(/iPhone/) != -1 || agent.search(/iPad/) != -1 || agent.search(/iPod/) != -1 || agent.search(/Android/) != -1)
+			{
+				$('#back-to-top a i').attr("class","fa fa-arrow-circle-up fa-5x");
+			}
+			
 			$('#back-to-top').hide();
 			
 			$(window).scroll(function() {

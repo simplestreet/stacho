@@ -39,8 +39,8 @@ body > #container {height:auto;}
 }
 #back-to-top{
 	position:fixed;
-	right:5px;
-	bottom:5px;
+	right:20px;
+	bottom:10px;
 }
 #back-to-top a{
 	color:#FFA400;
