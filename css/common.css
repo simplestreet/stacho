@@ -117,7 +117,7 @@
     transition: 0.8s;
 }
 #userprofile-right ul li.like a{
-	color : #FFA400;
+	color : #1E98B9;
 	-webkit-transition: 0.8s;
     -moz-transition: 0.8s;
     -o-transition: 0.8s;
@@ -126,6 +126,9 @@
 }
 #userprofile-right ul li.like a:hover{
 	color : #fff;
+}
+#userprofile-right ul li.like a i{
+	line-height:50px;
 }
 #userprofile-right ul li.posts {
 	background-color: #fff;
