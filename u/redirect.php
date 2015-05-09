@@ -155,25 +155,28 @@ if (empty($_GET['code'])){
 	//echo "count num: ".$count;
 
 	//月別のデータ統計
-	$sql = "select date_format(created,'%Y-%m') as created,count(*) as count from user_data group by date_format(created,'%Y%m') order by created desc";
+	$sql = "select date_format(created,'%Y-%m') as created,count(*) as count from user_data where user_id = :instagram_user_id group by date_format(created,'%Y%m') order by created desc";
 	$stmt = $dbh->prepare($sql);
-	$stmt->execute();
+	//$stmt->execute();
+	$stmt->execute(array(":instagram_user_id" => $_SESSION['user']['instagram_user_id']));
 	if ( $stmt-> rowCount() > 0 ) {
 		$_SESSION['monthly'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
 	//日別のデータ統計
-	$sql = "select date_format(created,'%Y-%m-%d') as created,count(*) as count from user_data group by date_format(created,'%Y%m%d') order by created desc";
+	$sql = "select date_format(created,'%Y-%m-%d') as created,count(*) as count from user_data where user_id = :instagram_user_id group by date_format(created,'%Y%m%d') order by created desc";
 	$stmt = $dbh->prepare($sql);
-	$stmt->execute();
+	//$stmt->execute();
+	$stmt->execute(array(":instagram_user_id" => $_SESSION['user']['instagram_user_id']));
 	if ( $stmt-> rowCount() > 0 ) {
 		$_SESSION['daily'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	//タグの情報を取得
-	$sql = "select tags from user_data order by created desc limit 20";
+	$sql = "select tags from user_data where user_id = :instagram_user_id order by created desc limit 20";
 	$stmt = $dbh->prepare($sql);
-	$stmt->execute();
+	//$stmt->execute();
+	$stmt->execute(array(":instagram_user_id" => $_SESSION['user']['instagram_user_id']));
 	if($stmt->rowCount() > 0 ){
 		$alldata = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		$array_all = array();
