@@ -22,7 +22,7 @@ if (empty($_SESSION['user'])){
 
 ?>
 <!doctype html>
-<html>
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <title>Followers page - Stacho</title>
