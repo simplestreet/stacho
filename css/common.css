@@ -103,7 +103,7 @@
 	text-align: center;
 	line-height: 50px;
 }
-#userprofile-right ul li.follower a,
+#userprofile-right ul li.followers a,
 #userprofile-right ul li.following a{
 	display:block;
 	background-color: #1E98B9;
@@ -136,7 +136,7 @@
 	cursor:default;
 }
 
-#userprofile-right ul li.follower a:hover,
+#userprofile-right ul li.followers a:hover,
 #userprofile-right ul li.following a:hover{
 	background-color:#fff;
 	color:#1E98B9;	

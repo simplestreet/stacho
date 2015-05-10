@@ -25,7 +25,7 @@ if (empty($_SESSION['user'])){
 <html>
 <head>
 <meta charset="utf-8">
-<title>Follower page - Stacho</title>
+<title>Followers page - Stacho</title>
 <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="../css/base.css" rel="stylesheet" type="text/css">
 <link href="../css/common.css" rel="stylesheet" type="text/css">

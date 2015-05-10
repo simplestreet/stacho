@@ -335,7 +335,7 @@ function headline_display($str) {
         </dl>
         <ul>
           <li class="posts"><span class="number"><?php echo h($userdetail->counts->media); ?></span> posts</li>
-          <li class="follower"><a href="<?php echo h(SITE_URL."u/followed.php")?>"><span class="number"><?php echo h($userdetail->counts->followed_by); ?></span> follower</a></li>
+          <li class="followers"><a href="<?php echo h(SITE_URL."u/followed.php")?>"><span class="number"><?php echo h($userdetail->counts->followed_by); ?></span> followers</a></li>
           <li class="following"><a href="<?php echo h(SITE_URL."u/follows.php")?>"><span class="number"><?php echo h($userdetail->counts->follows); ?></span> following</a></li>
           <li class="like"><a href="./like.php"><i class="fa fa-heart fa-3x"></i></a></li>
         </ul>
