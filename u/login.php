@@ -10,6 +10,7 @@
 </head>
 
 <body>
+<?php include_once("analyticstracking.php") ?>
 <div id="container">
   <div id="header" class="clearfix">
     <div class="header-inner">
