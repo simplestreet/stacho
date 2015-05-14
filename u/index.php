@@ -131,6 +131,9 @@ function headline_display($str) {
 // 3    40     20
 // 4    60     20
 
+//userの詳細なデータの受け渡し。
+$userdetail = $_SESSION['user_detail'];
+
 	//表示するdataの検索
 	$offset = MEDIAS_PER_PAGE * ($page -1);
 	$sql_postscript = " limit ".$offset.",".MEDIAS_PER_PAGE;
@@ -149,7 +152,7 @@ function headline_display($str) {
 		}
 		$stmt = $dbh->prepare($select.$where.$sql_postscript);
 		$tag = '%,'.$_GET['tag'].',%';
-		$params = array(":user_id" => $_SESSION['user']['instagram_user_id'],":tags" => $tag );
+		$params = array(":user_id" => $userdetail->id,":tags" => $tag );
 		$stmt->execute($params);
 		
 		//レコード数を取得
@@ -170,7 +173,7 @@ function headline_display($str) {
 			$where = " where user_id=:user_id and created >= :day and created < :nextday".$order_by;
 		}
 		$stmt = $dbh->prepare($select.$where.$sql_postscript);
-		$params = array(":user_id" => $_SESSION['user']['instagram_user_id'],":day" => $day,":nextday" => $nextday);
+		$params = array(":user_id" => $userdetail->id,":day" => $day,":nextday" => $nextday);
 		$stmt->execute($params);
 		
 		//レコード数を取得
@@ -192,7 +195,7 @@ function headline_display($str) {
 		}
 
 		$stmt = $dbh->prepare($select.$where.$sql_postscript);
-		$params = array(":user_id" => $_SESSION['user']['instagram_user_id'],":mon" => $mon,":nextmon" => $nextmon );
+		$params = array(":user_id" => $userdetail->id,":mon" => $mon,":nextmon" => $nextmon );
 		$stmt->execute($params);
 		
 		//レコード数を取得
@@ -216,7 +219,7 @@ function headline_display($str) {
 		$sql = $select." where user_id=:user_id and".$where.$order_by;
 		$stmt = $dbh->prepare($sql.$sql_postscript);
 		$params = array();
-		$params[":user_id"] = $_SESSION['user']['instagram_user_id'];
+		$params[":user_id"] = $userdetail->id;
 		for($i = 0 ; $i < $words_cnt; $i++ ) {
 			$params[":wword$i"] = '%'.$words[$i].'%';
 		}
@@ -240,7 +243,7 @@ function headline_display($str) {
 			$where = " where user_id=:user_id".$order_by;
 		}
 		$stmt = $dbh->prepare($select.$where.$sql_postscript);
-		$params = array(":user_id" => $_SESSION['user']['instagram_user_id']);
+		$params = array(":user_id" => $userdetail->id);
 		$stmt->execute($params);
 		
 		//レコード数を取得
@@ -250,7 +253,6 @@ function headline_display($str) {
 	}
 	//検索データの取得
 	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	
 	$totalPages = ceil($total / MEDIAS_PER_PAGE);
 	$from = $offset + 1;
 	$to =($offset + MEDIAS_PER_PAGE) < $total ? ($offset + MEDIAS_PER_PAGE) : $total;
@@ -267,7 +269,7 @@ function headline_display($str) {
 	$cnt_monthly = 0;
 	$cnt_tags = 0;
 
-	$userdetail = $_SESSION['user_detail'];
+	//$userdetail = $_SESSION['user_detail'];
 
 ?>
 <!doctype html>
@@ -322,8 +324,8 @@ function headline_display($str) {
   <div class="container-inner">
     <div id="userprofile" class="clearfix">
       <div id="userprofile-left">
-        <p><img src="<?php echo h($_SESSION['user']['instagram_profile_picture']); ?>" width="140" height="140" alt="profile image"/></p>
-        <p class="id"><a href="https://instagram.com/<?php echo h($_SESSION['user']['instagram_user_name'])?>/" target="_blank"><?php echo h($_SESSION['user']['instagram_user_name']); ?></a></p>
+        <p><img src="<?php echo h($userdetail->profile_picture); ?>" width="140" height="140" alt="profile image"/></p>
+        <p class="id"><a href="https://instagram.com/<?php echo h($userdetail->username); ?>/" target="_blank"><?php echo h($userdetail->username); ?></a></p>
       </div>
       <div id="userprofile-right">
         <dl>
@@ -379,7 +381,7 @@ function headline_display($str) {
 			<?php else: ?>
 				<li class="nonactive"><a href="./">&lt; prev</a></li>
 			<?php endif; ?>
-			<li><a href="./"><?php echo h($_SESSION['user']['instagram_user_name']); ?></a></li>
+			<li><a href="./"><?php echo h($userdetail->username); ?></a></li>
 			<?php if($page < $totalPages): ?>
 				<li><a href="<?php echo next_url_generator($page); ?>">next &gt;</a></li>
 			<?php else: ?>
@@ -418,7 +420,7 @@ function headline_display($str) {
 			<?php else: ?>
 				<li class="nonactive"><a href="./">&lt; prev</a></li>
 			<?php endif; ?>
-			<li><a href="./"><?php echo h($_SESSION['user']['instagram_user_name']); ?></a></li>
+			<li><a href="./"><?php echo h($userdetail->username); ?></a></li>
 			<?php if($page < $totalPages): ?>
 				<li><a href="<?php echo next_url_generator($page); ?>">next &gt;</a></li>
 			<?php else: ?>
