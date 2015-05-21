@@ -77,12 +77,14 @@ if (empty($_GET['code'])){
 	}
 	$user_id = $_SESSION['user']['instagram_user_id'];
 	//$user_id = "955267148";
-	//全ユーザー情報更新
+	
+	////全ユーザー情報更新////////////////////////////////////////////////////////////////////////////
 	$url = "https://api.instagram.com/v1/users/".$user_id."/?access_token=".$_SESSION['user']['instagram_access_token'];
 	$json = file_get_contents($url);
 	$json = json_decode($json);
 
-	$_SESSION['user_detail'] = $data = $json->data;
+	//$_SESSION['user_detail']
+	$data = $json->data;
 
 	$sql = "update users set instagram_user_name = :instagram_user_name,full_name = :full_name,instagram_profile_picture = :instagram_profile_picture,
 			bio = :bio,website = :website,media = :media,follows = :follows,followed_by = :followed_by,modified = now() where instagram_user_id = :instagram_user_id";
@@ -98,7 +100,7 @@ if (empty($_GET['code'])){
 				":followed_by" => $data->counts->followed_by,
 				":instagram_user_id" => $data->id );
 	$stmt->execute($params);
-
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	// 1430652834 自分
 	// 173645757  ローラ
@@ -152,9 +154,8 @@ if (empty($_GET['code'])){
 			$json = json_decode($json);
 		}
 	}
-	//echo "count num: ".$count;
-
-	//月別のデータ統計
+/*
+	/////月別のデータ統計/////////////////////////////////////////////////////////////////////////////
 	$sql = "select date_format(created,'%Y-%m') as created,count(*) as count from user_data where user_id = :instagram_user_id group by date_format(created,'%Y%m') order by created desc";
 	$stmt = $dbh->prepare($sql);
 	//$stmt->execute();
@@ -162,8 +163,9 @@ if (empty($_GET['code'])){
 	if ( $stmt-> rowCount() > 0 ) {
 		$_SESSION['monthly'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
-	
-	//日別のデータ統計
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/////日別のデータ統計/////////////////////////////////////////////////////////////////////////////
 	$sql = "select date_format(created,'%Y-%m-%d') as created,count(*) as count from user_data where user_id = :instagram_user_id group by date_format(created,'%Y%m%d') order by created desc";
 	$stmt = $dbh->prepare($sql);
 	//$stmt->execute();
@@ -171,8 +173,9 @@ if (empty($_GET['code'])){
 	if ( $stmt-> rowCount() > 0 ) {
 		$_SESSION['daily'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//タグの情報を取得
+	/////タグの情報を取得/////////////////////////////////////////////////////////////////////////////
 	$sql = "select tags from user_data where user_id = :instagram_user_id order by created desc limit 20";
 	$stmt = $dbh->prepare($sql);
 	//$stmt->execute();
@@ -193,7 +196,10 @@ if (empty($_GET['code'])){
 			//$_SESSION['tags'] = array_merge(array_unique($array_all));
 		}
 	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////
 
+*/
+	
 	$dbh = null;
 
 	// index.php

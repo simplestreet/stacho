@@ -1,101 +1,9 @@
 <?php
 require_once('config.php');
+require_once('function.php');
 session_start();
 
-function h($s){
-	return htmlspecialchars($s,ENT_QUOTES,"UTF-8");
-}
 
-//generate pager url
-function pager_url_generator($_page){
-	//$ret = SITE_URL;
-	if( !empty($_GET['day']) ){
-		$ret .= "?day=".h($_GET["day"])."&page=".h($_page);
-	}elseif(  !empty($_GET['mon']) ){
-		$ret .= "?mon=".h($_GET["mon"])."&page=".h($_page);
-	}elseif(  !empty($_GET['tag']) ){
-		$ret .= "?tag=".h($_GET["tag"])."&page=".h($_page);
-	}elseif(  !empty($_GET['word']) ){
-		$ret .= "?word=".h($_GET["word"])."&page=".h($_page);
-	}else{
-		$ret .= "?page=".h($_page);
-	}
-	if( !empty($_GET['media']) ){
-		$ret .= "&media=".$_GET['media'];
-	}
-	return $ret;
-}
-function prev_url_generator($arg_page){
-	return pager_url_generator($arg_page-1);
-}
-function next_url_generator($arg_page){
-	return pager_url_generator($arg_page+1);
-}
-
-//generate media url
-function media_url_generator($_media_mode){
-	//$ret = SITE_URL;
-	if( !empty($_GET['day']) ){
-		$ret = "?day=".h($_GET["day"]);
-	}elseif(  !empty($_GET['mon']) ){
-		$ret = "?mon=".h($_GET["mon"]);
-	}elseif(  !empty($_GET['tag']) ){
-		$ret = "?tag=".h($_GET["tag"]);
-	}elseif(  !empty($_GET['word']) ){
-		$ret = "?word=".h($_GET["word"]);
-	}else{
-		switch($_media_mode) {
-			case 1:  /* only image */
-				$ret .= h("?media=i");
-				break;
-			case 2:  /* only movie */
-				$ret .= h("?media=m");
-				break;
-			case 0:  /* both */
-			default:
-				break;
-		}
-		return $ret;
-	}
-	
-	switch($_media_mode) {
-		case 1:  /* only image */
-			$ret .= h("&media=i");
-			break;
-		case 2:  /* only movie */
-			$ret .= h("&media=m");
-			break;
-		case 0:  /* both */
-		default:
-			break;
-	}
-	return $ret;
-}
-
-//media active check
-function media_active_check($media){
-	$ret = "";
-	switch($media) {
-		case 0: /*both*/
-			if( empty($_GET['media']) ) {
-				$ret = "active";
-			} 
-			break;
-		case 1: /* only image */
-			if ( strcmp($_GET['media'],'i') === 0){
-				$ret = "active";
-			}
-			break;
-		case 2:
-			if ( strcmp($_GET['media'],'m') === 0){
-				$ret = "active";
-			}
-			break;
-		default:
-			break;
-	}
-	return $ret;
-}
 
 // login check
 if (empty($_SESSION['user'])){
@@ -111,19 +19,14 @@ if(preg_match('/^[1-9][0-9]*$/',$_GET['page'])){
 	$page = 1;
 }
 
-//日付をY-m-dにして返す。
-function headline_display($str) {
-	return date("Y-m-d",strtotime($str));
+//user情報の格納
+try{
+	$dbh = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME,DB_USER,DB_PASSWORD);
+}catch(PDOEXception $e){
+	echo $e->getMessage();
+	exit;
 }
 
-
-	//user情報の格納
-	try{
-		$dbh = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME,DB_USER,DB_PASSWORD);
-	}catch(PDOEXception $e){
-		echo $e->getMessage();
-		exit;
-	}
 //
 // page offset count
 // 1    0      20
@@ -131,8 +34,20 @@ function headline_display($str) {
 // 3    40     20
 // 4    60     20
 
+
+
+//user情報の取得 ?id対応時に変更する。
+if(!empty($_SESSION['user_detail'][0])){
+	if(strcmp($_SESSION['user']['instagram_user_name'],$_SESSION['user_detail'][0]['instagram_user_name']) !== 0){
+		get_userinfo($dbh,$_SESSION['user']['instagram_user_id']);
+	}
+}else{
+	get_userinfo($dbh,$_SESSION['user']['instagram_user_id']);
+}
+
+
 //userの詳細なデータの受け渡し。
-$userdetail = $_SESSION['user_detail'];
+$userdetail = $_SESSION['user_detail'][0];
 
 	//表示するdataの検索
 	$offset = MEDIAS_PER_PAGE * ($page -1);
@@ -152,7 +67,7 @@ $userdetail = $_SESSION['user_detail'];
 		}
 		$stmt = $dbh->prepare($select.$where.$sql_postscript);
 		$tag = '%,'.$_GET['tag'].',%';
-		$params = array(":user_id" => $userdetail->id,":tags" => $tag );
+		$params = array(":user_id" => /*$userdetail->id*/(int)$userdetail['instagram_user_id'],":tags" => $tag );
 		$stmt->execute($params);
 		
 		//レコード数を取得
@@ -173,7 +88,7 @@ $userdetail = $_SESSION['user_detail'];
 			$where = " where user_id=:user_id and created >= :day and created < :nextday".$order_by;
 		}
 		$stmt = $dbh->prepare($select.$where.$sql_postscript);
-		$params = array(":user_id" => $userdetail->id,":day" => $day,":nextday" => $nextday);
+		$params = array(":user_id" => /*$userdetail->id*/(int)$userdetail['instagram_user_id'],":day" => $day,":nextday" => $nextday);
 		$stmt->execute($params);
 		
 		//レコード数を取得
@@ -193,9 +108,8 @@ $userdetail = $_SESSION['user_detail'];
 		} else {
 			$where = " where user_id=:user_id and created >= :mon and created < :nextmon".$order_by;
 		}
-
 		$stmt = $dbh->prepare($select.$where.$sql_postscript);
-		$params = array(":user_id" => $userdetail->id,":mon" => $mon,":nextmon" => $nextmon );
+		$params = array(":user_id" => (int)$userdetail['instagram_user_id'],":mon" => $mon,":nextmon" => $nextmon );
 		$stmt->execute($params);
 		
 		//レコード数を取得
@@ -219,7 +133,7 @@ $userdetail = $_SESSION['user_detail'];
 		$sql = $select." where user_id=:user_id and".$where.$order_by;
 		$stmt = $dbh->prepare($sql.$sql_postscript);
 		$params = array();
-		$params[":user_id"] = $userdetail->id;
+		$params[":user_id"] = /*$userdetail->id*/(int)$userdetail['instagram_user_id'];
 		for($i = 0 ; $i < $words_cnt; $i++ ) {
 			$params[":wword$i"] = '%'.$words[$i].'%';
 		}
@@ -243,7 +157,7 @@ $userdetail = $_SESSION['user_detail'];
 			$where = " where user_id=:user_id".$order_by;
 		}
 		$stmt = $dbh->prepare($select.$where.$sql_postscript);
-		$params = array(":user_id" => $userdetail->id);
+		$params = array(":user_id" => /*$userdetail->id*/(int)$userdetail['instagram_user_id']);
 		$stmt->execute($params);
 		
 		//レコード数を取得
@@ -324,35 +238,36 @@ $userdetail = $_SESSION['user_detail'];
   <div class="container-inner">
     <div id="userprofile" class="clearfix">
       <div id="userprofile-left">
-        <p><img src="<?php echo h($userdetail->profile_picture); ?>" width="140" height="140" alt="profile image"/></p>
-        <p class="id"><a href="https://instagram.com/<?php echo h($userdetail->username); ?>/" target="_blank"><?php echo h($userdetail->username); ?></a></p>
+        <p><img src="<?php echo h($userdetail['instagram_profile_picture']); ?>" width="140" height="140" alt="profile image"/></p>
+        <p class="id"><a href="https://instagram.com/<?php echo h($userdetail['instagram_user_name']); ?>/" target="_blank"><?php echo h($userdetail['instagram_user_name']); ?></a></p>
       </div>
       <div id="userprofile-right">
         <dl>
           <dt>fullname:</dt>
-          <dd><?php echo h($userdetail->full_name); ?></dd>
+          <dd><?php echo h($userdetail['full_name']); ?></dd>
           <dt>biography:</dt>
-          <dd><?php echo h($userdetail->bio); ?></dd>
+          <dd><?php echo h($userdetail['bio']); ?></dd>
           <dt>website:</dt>
-          <dd><a href="<?php echo h($userdetail->website); ?>" target="_blank"><?php echo h($userdetail->website); ?></a></dd>
+          <dd><a href="<?php echo h($userdetail['website']); ?>" target="_blank"><?php echo h($userdetail['website']); ?></a></dd>
         </dl>
         <ul>
-          <li class="posts"><span class="number"><?php echo h($userdetail->counts->media); ?></span> posts</li>
-          <li class="followers"><a href="<?php echo h(SITE_URL."u/followed.php")?>"><span class="number"><?php echo h($userdetail->counts->followed_by); ?></span> followers</a></li>
-          <li class="following"><a href="<?php echo h(SITE_URL."u/follows.php")?>"><span class="number"><?php echo h($userdetail->counts->follows); ?></span> following</a></li>
+          <li class="posts"><span class="number"><?php echo h($userdetail['media']); ?></span> posts</li>
+          <li class="followers"><a href="<?php echo h(SITE_URL."u/followed.php")?>"><span class="number"><?php echo h($userdetail['followed_by']); ?></span> followers</a></li>
+          <li class="following"><a href="<?php echo h(SITE_URL."u/follows.php")?>"><span class="number"><?php echo h($userdetail['follows']); ?></span> following</a></li>
           <li class="like"><a href="./like.php"><i class="fa fa-heart fa-3x"></i></a></li>
         </ul>
       </div>
       <!-- /#userprofile --></div>
-    <!-- <div id="page-nav">
-    	<?php if(!empty($_GET['word']) || !empty($_GET['tag']) || !empty($_GET['day']) || !empty($_GET['mon'])) :?>
-    	<p>link</p>
-    	<?php else: ?>
-    	<p><a href="<?php echo h(SITE_URL)?>">Home</a> / <??></p>
-    	<?php endif; ?>
-    </div> -->
-    <div id="main" class="clearfix
-    ">
+    <div id="main" class="clearfix">
+    	<ul id="current_page" class="clearfix">
+    		<li><a href="<?php echo h(SITE_URL); ?>"><i class="fa fa-home fa-2x"></i></a></li>
+    		<li> <i class="fa fa-angle-right fa-2x"></i> </li>
+    		<li><a href="<?php echo h(SITE_URL."u/"); ?>"><?php echo h($userdetail['instagram_user_name']);?></a></li>
+    		<?php $chars_currentpage = get_chars_currentpage(); if(!empty($chars_currentpage)): ?>
+    			<li> <i class="fa fa-angle-right fa-2x"></i> </li>
+    			<li><?php echo h($chars_currentpage);?></li>
+    		<?php endif; ?>
+    	</ul>
       <div id="mainContents">
       	<?php if( empty($_GET['word']) ): ?>
       		<dl class="clearfix">
@@ -381,7 +296,7 @@ $userdetail = $_SESSION['user_detail'];
 			<?php else: ?>
 				<li class="nonactive"><a href="./">&lt; prev</a></li>
 			<?php endif; ?>
-			<li><a href="./"><?php echo h($userdetail->username); ?></a></li>
+			<li><a href="./"><?php echo h($userdetail['instagram_user_name']); ?></a></li>
 			<?php if($page < $totalPages): ?>
 				<li><a href="<?php echo next_url_generator($page); ?>">next &gt;</a></li>
 			<?php else: ?>
@@ -420,7 +335,7 @@ $userdetail = $_SESSION['user_detail'];
 			<?php else: ?>
 				<li class="nonactive"><a href="./">&lt; prev</a></li>
 			<?php endif; ?>
-			<li><a href="./"><?php echo h($userdetail->username); ?></a></li>
+			<li><a href="./"><?php echo h($userdetail['instagram_user_name']); ?></a></li>
 			<?php if($page < $totalPages): ?>
 				<li><a href="<?php echo next_url_generator($page); ?>">next &gt;</a></li>
 			<?php else: ?>
@@ -467,7 +382,11 @@ $userdetail = $_SESSION['user_detail'];
 				<?php if($cnt_daily >= 10): ?>
 					<?php break; ?>
 				<?php endif; ?>
-				<p><a href="<?php echo '?day='.h($data['created']).(!empty($_GET['media']) ? "&media=".$_GET['media'] : "" ); ?>"><?php echo h($data['created']); ?> <span class="item-num"><?php echo h($data['count']); ?></span></a></p>
+				<?php if( !empty($_GET['day']) && strcmp($data['created'],$_GET['day']) === 0 ) : ?>
+					<p><a href="" class="active" ><?php echo h($data['created']); ?> <span class="item-num"><?php echo h($data['count']); ?></span></a></p>
+				<?php else: ?>
+					<p><a href="<?php echo '?day='.h($data['created']).(!empty($_GET['media']) ? "&media=".$_GET['media'] : "" ); ?>"><?php echo h($data['created']); ?> <span class="item-num"><?php echo h($data['count']); ?></span></a></p>
+				<?php endif; ?>
 			<?php $cnt_daily++; endforeach; ?>
           <!-- /.item-box --></div>
         <div class="item-box">
@@ -477,7 +396,11 @@ $userdetail = $_SESSION['user_detail'];
 					<li><a href=""><?php echo h("もっと見る..."); ?></a></li>
 					<?php break; ?>
 				<?php endif; ?> -->
-				<p><a href="<?php echo '?mon='.h($data['created']).(!empty($_GET['media']) ? "&media=".$_GET['media'] : "" ); ?>"><?php echo h($data['created']); ?> <span class="item-num"><?php echo h($data['count']); ?></span></a></p>
+				<?php if( !empty($_GET['mon']) && strcmp($data['created'],$_GET['mon']) === 0 ) : ?>
+					<p><a href="" class="active"><?php echo h($data['created']); ?> <span class="item-num"><?php echo h($data['count']); ?></span></a></p>
+				<?php else: ?>
+					<p><a href="<?php echo '?mon='.h($data['created']).(!empty($_GET['media']) ? "&media=".$_GET['media'] : "" ); ?>"><?php echo h($data['created']); ?> <span class="item-num"><?php echo h($data['count']); ?></span></a></p>
+				<?php endif; ?>
 			<?php $cnt_monthly++; endforeach; ?>
           <!-- /.item-box --></div>
         <div class="item-box">
@@ -486,7 +409,11 @@ $userdetail = $_SESSION['user_detail'];
 				<?php if($cnt_tags >= 15): ?>
 					<?php break; ?>
 				<?php endif; ?>
-				<p><a href="?tag=<?php echo h($tag).(!empty($_GET['media']) ? "&media=".$_GET['media'] : "" ); ?>"><?php echo h("#".$tag); ?></a></p>
+				<?php if( !empty($_GET['tag']) && strcmp($tag,$_GET['tag']) === 0 ) : ?>
+					<p><a href="" class="active" ><?php echo h("#".$tag); ?></a></p>
+				<?php else: ?>
+					<p><a href="?tag=<?php echo h($tag).(!empty($_GET['media']) ? "&media=".$_GET['media'] : "" ); ?>"><?php echo h("#".$tag); ?></a></p>
+				<?php endif; ?>
 			<?php $cnt_tags++; endforeach; ?>
           <!-- /.item-box --></div>
         <!-- /#sidemenu --></div>

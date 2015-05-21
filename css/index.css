@@ -1,4 +1,24 @@
 @charset "utf-8";
+#main #current_page {
+	font-size:120%;
+	margin-bottom:10px;
+}
+#current_page li {
+	float:left;
+	line-height:2em;
+	padding: 0 10px;
+	color:#999999;
+}
+#current_page li a {
+	text-decoration:none;
+	display:block;
+	font-weight:bold;
+	color:#1E98B9;
+}
+#current_page li .fa-angle-right {
+	color:#999999;
+}
+
 #main #mainContents {
 	float: left;
 	width: 500px;
@@ -202,6 +222,12 @@
 }
 #sidemenu .item-box p a:hover{
 	color:#A9A9A9;
+}
+#sidemenu .item-box p a.active{
+	pointer-events: none;
+	cursor: default;
+	color: #A9A9A9;
+	font-weight:bold;
 }
 #sidemenu .item-box p .item-num{
 	text-align: right;
