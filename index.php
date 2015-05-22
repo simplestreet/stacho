@@ -1,3 +1,18 @@
+<?php
+require_once('u/config.php');
+
+session_start();
+function get_login_url(){
+	$ret = "";
+	if(empty($_SESSION['user'])){
+		$ret = SITE_URL.'u/login.php';
+	}else{
+		$ret = SITE_URL.'u/?id='.$_SESSION['user']['instagram_user_name'];
+	}
+	return $ret;
+}
+
+?>
 <!doctype html>
 <html>
 <head>
@@ -39,7 +54,7 @@
       <div id="home-right">
         <p><img src="images/stacho_logo.png" width="150" height="" alt="Stacho"/></p>
         <p class="caption">Instagramをもっと便利に。。。</p>
-        <p class="button"><a href="./u/">Login or 新規登録</a></p>
+        <p class="button"><a href="<?php echo get_login_url(); ?>">Login or 新規登録</a></p>
         <ul>
           <li><a href="https://twitter.com/share" class="twitter-share-button" data-url="http://stcho.xyz">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></li>
           <li><a href="http://b.hatena.ne.jp/entry/stacho.xyz" class="hatena-bookmark-button" data-hatena-bookmark-title="Stacho - Instagramをもっと便利に。。。" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script></li>

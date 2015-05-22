@@ -13,8 +13,11 @@ if (empty($_SESSION['user'])){
 	header('Location: '.SITE_URL.'u/login.php');
 	exit;
 }
+	$userdetail = $_SESSION['user_detail'][0];
+	
 	//全ユーザー情報更新
-	$url = "https://api.instagram.com/v1/users/".$_SESSION['user']['instagram_user_id']."/follows?access_token=".$_SESSION['user']['instagram_access_token'];
+	$url = "https://api.instagram.com/v1/users/".$userdetail['instagram_user_id']."/follows?access_token=".$_SESSION['user']['instagram_access_token'];
+	//$url = "https://api.instagram.com/v1/users/".$_SESSION['user']['instagram_user_id']."/follows?access_token=".$_SESSION['user']['instagram_access_token'];
 	//$url = "https://api.instagram.com/v1/users/"."2823122"."/follows?access_token=".$_SESSION['user']['instagram_access_token'];
 	$json = file_get_contents($url);
 	$json = json_decode($json);
@@ -91,7 +94,7 @@ if (empty($_SESSION['user'])){
   <div class="container-inner">
     <div id="main" class="clearfix">
       <div id="mainContents">
-        <p class="return"><a href="<?php echo h(SITE_URL."u/"); ?>"> &gt;&gt;<?php echo h($_SESSION['user']['instagram_user_name']); ?>のページへ戻る</a></p>
+        <p class="return"><a href="<?php echo h(SITE_URL."u/?id=".$userdetail['instagram_user_name']); ?>"> &gt;&gt;<?php echo h($userdetail['instagram_user_name']); ?>のページへ戻る</a></p>
         <ul id="tweets" class="clearfix">
           <?php foreach($json->data as $data): ?>
 			<li><p><img src="<?php echo h($data->profile_picture); ?>" width="80" height="80" alt="profile_picture" /> <?php echo h($data->full_name); ?> : <a href="https://instagram.com/<?php echo h($data->username."/"); ?>" target="_blank"><?php echo h($data->username); ?></a></p></li>

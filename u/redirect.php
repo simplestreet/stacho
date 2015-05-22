@@ -49,6 +49,7 @@ if (empty($_GET['code'])){
 	}
 	$stmt = $dbh->prepare("select * from users where instagram_user_id=:user_id limit 1");
 	$stmt->execute(array(":user_id" => $json->user->id));
+	//$stmt->execute(array(":user_id" => 2823122));
 	$user = $stmt->fetch();
 
 	if( empty($user)) {
@@ -59,6 +60,7 @@ if (empty($_GET['code'])){
 		
 		$params = array(
 			":user_id" => $json->user->id,
+			//":user_id" => 2823122,
 			":user_name" => $json->user->username,
 			":profile_picture" => $json->user->profile_picture,
 			":access_token" => $json->access_token
@@ -76,13 +78,12 @@ if (empty($_GET['code'])){
 		$_SESSION['user'] = $user;
 	}
 	$user_id = $_SESSION['user']['instagram_user_id'];
-	//$user_id = "955267148";
+	//$user_id = "2823122";
 	
 	////全ユーザー情報更新////////////////////////////////////////////////////////////////////////////
 	$url = "https://api.instagram.com/v1/users/".$user_id."/?access_token=".$_SESSION['user']['instagram_access_token'];
 	$json = file_get_contents($url);
 	$json = json_decode($json);
-
 	//$_SESSION['user_detail']
 	$data = $json->data;
 
@@ -154,56 +155,11 @@ if (empty($_GET['code'])){
 			$json = json_decode($json);
 		}
 	}
-/*
-	/////月別のデータ統計/////////////////////////////////////////////////////////////////////////////
-	$sql = "select date_format(created,'%Y-%m') as created,count(*) as count from user_data where user_id = :instagram_user_id group by date_format(created,'%Y%m') order by created desc";
-	$stmt = $dbh->prepare($sql);
-	//$stmt->execute();
-	$stmt->execute(array(":instagram_user_id" => $user_id));
-	if ( $stmt-> rowCount() > 0 ) {
-		$_SESSION['monthly'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/////日別のデータ統計/////////////////////////////////////////////////////////////////////////////
-	$sql = "select date_format(created,'%Y-%m-%d') as created,count(*) as count from user_data where user_id = :instagram_user_id group by date_format(created,'%Y%m%d') order by created desc";
-	$stmt = $dbh->prepare($sql);
-	//$stmt->execute();
-	$stmt->execute(array(":instagram_user_id" => $user_id));
-	if ( $stmt-> rowCount() > 0 ) {
-		$_SESSION['daily'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/////タグの情報を取得/////////////////////////////////////////////////////////////////////////////
-	$sql = "select tags from user_data where user_id = :instagram_user_id order by created desc limit 20";
-	$stmt = $dbh->prepare($sql);
-	//$stmt->execute();
-	$stmt->execute(array(":instagram_user_id" => $user_id));
-	if($stmt->rowCount() > 0 ){
-		$alldata = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		$array_all = array();
-		foreach($alldata as $data) {
-			if( !empty($data['tags']) ){
-				$array = explode( "," , $data['tags'] );
-				$array_all =array_merge($array_all,$array);
-			}
-		}
-		if( !empty($array_all) ) {
-			$tmp_array = array_unique($array_all);
-			unset($tmp_array[0]);
-			$_SESSION['tags'] = array_merge($tmp_array);
-			//$_SESSION['tags'] = array_merge(array_unique($array_all));
-		}
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////
-
-*/
 	
 	$dbh = null;
 
 	// index.php
-	header('Location: '.SITE_URL.'u/');
-	
+	header('Location: '.SITE_URL.'u/?id='.$_SESSION['user']['instagram_user_name']);
+	//header('Location: '.SITE_URL.'u/?id='.'suenagamiyu');
 }
 ?>

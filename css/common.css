@@ -117,6 +117,11 @@
     -ms-transition: 0.8s;
     transition: 0.8s;
 }
+#userprofile-right ul li.followers a.nosession,
+#userprofile-right ul li.following a.nosession{
+	pointer-events: none;
+}
+	
 #userprofile-right ul li.like a{
 	color : #1E98B9;
 	-webkit-transition: 0.8s;
@@ -124,6 +129,9 @@
     -o-transition: 0.8s;
     -ms-transition: 0.8s;
     transition: 0.8s;
+}
+#userprofile-right ul li.like a.nonactive{
+	pointer-events: none;
 }
 #userprofile-right ul li.like a:hover{
 	color : #fff;
