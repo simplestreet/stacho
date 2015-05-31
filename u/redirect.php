@@ -49,7 +49,7 @@ if (empty($_GET['code'])){
 	}
 	$stmt = $dbh->prepare("select * from users where instagram_user_id=:user_id limit 1");
 	$stmt->execute(array(":user_id" => $json->user->id));
-	//$stmt->execute(array(":user_id" => 2823122));
+	//$stmt->execute(array(":user_id" => 173645757));
 	$user = $stmt->fetch();
 
 	if( empty($user)) {
@@ -60,7 +60,7 @@ if (empty($_GET['code'])){
 		
 		$params = array(
 			":user_id" => $json->user->id,
-			//":user_id" => 2823122,
+			//":user_id" => 173645757,
 			":user_name" => $json->user->username,
 			":profile_picture" => $json->user->profile_picture,
 			":access_token" => $json->access_token
@@ -78,7 +78,7 @@ if (empty($_GET['code'])){
 		$_SESSION['user'] = $user;
 	}
 	$user_id = $_SESSION['user']['instagram_user_id'];
-	//$user_id = "2823122";
+	//$user_id = "173645757";
 	
 	////全ユーザー情報更新////////////////////////////////////////////////////////////////////////////
 	$url = "https://api.instagram.com/v1/users/".$user_id."/?access_token=".$_SESSION['user']['instagram_access_token'];
@@ -160,6 +160,6 @@ if (empty($_GET['code'])){
 
 	// index.php
 	header('Location: '.SITE_URL.'u/?id='.$_SESSION['user']['instagram_user_name']);
-	//header('Location: '.SITE_URL.'u/?id='.'suenagamiyu');
+	//header('Location: '.SITE_URL.'u/?id='.'rolaofficial');
 }
 ?>

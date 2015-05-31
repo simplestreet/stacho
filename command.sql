@@ -8,7 +8,7 @@ create table users(
 	instagram_user_name varchar(255),
 	full_name varchar(255),
 	instagram_profile_picture varchar(255),
-	bio varchar(255),
+	bio varchar(510),
 	website varchar(255),
 	instagram_access_token varchar(255),
 	media int,

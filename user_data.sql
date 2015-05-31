@@ -5,7 +5,7 @@ create table user_data(
   image_id varchar(255) not null unique,
   image_url varchar(255) unique,
   link varchar(255) unique,
-  caption varchar(255),
+  caption varchar(510),
   tags varchar(255),
   video boolean,
   created datetime
