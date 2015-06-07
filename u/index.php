@@ -6,11 +6,12 @@ session_start();
 
 
 // login check
+/*
 if (empty($_SESSION['user'])){
 	header('Location: '.SITE_URL.'u/login.php');
 	exit;
 }
-
+*/
 define('MEDIAS_PER_PAGE' , 20 );
 
 if(preg_match('/^[1-9][0-9]*$/',$_GET['page'])){
@@ -46,15 +47,22 @@ if(isset($_GET['id'])){
 }else{
 	header('Location: '.SITE_URL);
 }
+if(isset($_SESSION['user_detail'])){
+	//userの詳細なデータの受け渡し。
+	$userdetail = $_SESSION['user_detail'][0];
 
-//userの詳細なデータの受け渡し。
-$userdetail = $_SESSION['user_detail'][0];
-
+	//cacheによるテーブルの指定
+	if($_SESSION['cache']){
+		$user_data = " cache_user_data";
+	} else {
+		$user_data = " user_data";
+	}
 	//表示するdataの検索
 	$offset = MEDIAS_PER_PAGE * ($page -1);
 	$sql_postscript = " limit ".$offset.",".MEDIAS_PER_PAGE;
 	$order_by = " order by created desc";
-	$select = "select * from user_data";
+	//$select = "select * from user_data";
+	$select = "select * from".$user_data;
 	if( !empty($_GET['tag']) ){
 		$where = "";
 		if(!empty($_GET['media']) ){
@@ -72,7 +80,8 @@ $userdetail = $_SESSION['user_detail'][0];
 		$stmt->execute($params);
 		
 		//レコード数を取得
-		$stmt_cnt = $dbh->prepare("select count(*) from user_data".$where);
+		//$stmt_cnt = $dbh->prepare("select count(*) from user_data".$where);
+		$stmt_cnt = $dbh->prepare("select count(*) from".$user_data.$where);
 		$stmt_cnt->execute($params);
 		$total = $stmt_cnt->fetchColumn();
 	} else if( !empty($_GET['day']) ){
@@ -93,7 +102,8 @@ $userdetail = $_SESSION['user_detail'][0];
 		$stmt->execute($params);
 		
 		//レコード数を取得
-		$stmt_cnt = $dbh->prepare("select count(*) from user_data".$where);
+		//$stmt_cnt = $dbh->prepare("select count(*) from user_data".$where);
+		$stmt_cnt = $dbh->prepare("select count(*) from".$user_data.$where);
 		$stmt_cnt->execute($params);
 		$total = $stmt_cnt->fetchColumn();
 	} else if( !empty($_GET['mon'])) {
@@ -114,7 +124,8 @@ $userdetail = $_SESSION['user_detail'][0];
 		$stmt->execute($params);
 		
 		//レコード数を取得
-		$stmt_cnt = $dbh->prepare("select count(*) from user_data".$where);
+		//$stmt_cnt = $dbh->prepare("select count(*) from user_data".$where);
+		$stmt_cnt = $dbh->prepare("select count(*) from".$user_data.$where);
 		$stmt_cnt->execute($params);
 		$total = $stmt_cnt->fetchColumn();
 
@@ -141,7 +152,8 @@ $userdetail = $_SESSION['user_detail'][0];
 		$stmt->execute($params);
 		
 		//レコード数を取得
-		$sql = "select count(*) from user_data where user_id=:user_id and".$where.$order_by;
+		//$sql = "select count(*) from user_data where user_id=:user_id and".$where.$order_by;
+		$sql = "select count(*) from".$user_data." where user_id=:user_id and".$where.$order_by;
 		$stmt_cnt = $dbh->prepare($sql);
 		$stmt_cnt->execute($params);
 		$total = $stmt_cnt->fetchColumn();
@@ -162,7 +174,8 @@ $userdetail = $_SESSION['user_detail'][0];
 		$stmt->execute($params);
 		
 		//レコード数を取得
-		$stmt_cnt = $dbh->prepare("select count(*) from user_data".$where);
+		//$stmt_cnt = $dbh->prepare("select count(*) from user_data".$where);
+		$stmt_cnt = $dbh->prepare("select count(*) from".$user_data.$where);
 		$stmt_cnt->execute($params);
 		$total = $stmt_cnt->fetchColumn();
 	}
@@ -183,8 +196,7 @@ $userdetail = $_SESSION['user_detail'][0];
 	$cnt_daily = 0;
 	$cnt_monthly = 0;
 	$cnt_tags = 0;
-
-	//$userdetail = $_SESSION['user_detail'];
+}
 
 ?>
 <!doctype html>
@@ -212,12 +224,26 @@ $userdetail = $_SESSION['user_detail'][0];
 				return true;
 			}
 		}
+		function validUserForm() {
+			var formElem = document.getElementsByName("searchId");
+			if( formElem[0].value == "" ) {
+				return false;
+			} else {
+				//ascii 一文字は検索対象としない。
+				if( unescape(encodeURIComponent(formElem[0].value)).length < 2) {
+				return false;
+				}
+				location.href = "./?id=" + formElem[0].value;
+				$('#loading').show();
+				return true;
+			}
+		}
 		$(function(){
 			$('img').error(function(){
 				$(this).parent().parent().remove();
 			});
 			$('#delete-logdata').click(function(){
-				if(!confirm('本当に削除しますか？')){
+				if(!confirm('ログされたデータを削除しますか？')){
 					/* キャンセルの時の処理 */
 					return false;
 				}
@@ -232,13 +258,25 @@ $userdetail = $_SESSION['user_detail'][0];
   <div id="header" class="clearfix">
     <div class="header-inner">
       <h1><a href="<?php echo h(SITE_URL);?>"><img src="../images/stacho_logo.png" width="140" height="" alt="Stacho"></a></h1>
-      <p><a href="logout.php">logout</a></p>
+		<form id="usearch" onsubmit="validUserForm();return false;" method="get">
+			<input type="text" value="" name="searchId" maxlength="50" placeholder="Instagram ID">
+			</input>
+			<input type="submit" value="&#xf007;">
+			</input>
+		</form>
+		<?php if(!empty($_SESSION['user'])) :?>
+			<p><a href="logout.php">logout</a></p>
+		<?php else: ?>
+			<p><a href="<?php echo h(SITE_URL."u/login.php"); ?>">login</a></p>
+		<?php endif; ?>
     </div>
     <!--		<p><?php echo h($_SERVER["REQUEST_URI"]); ?></p>
 		<p><?php echo h($_SERVER["PHP_SELF"]); ?></p>
 		<p style="font:250%;color=blue;"><?php echo mb_internal_encoding(); ?></p>-->
     <!-- /#header --></div>
   <div class="container-inner">
+  	<p id="loading"><i class="fa fa-refresh fa-spin fa-3x"></i> Now logging...it may take about 2 minutes</p>
+  	<?php if(isset($_SESSION['user_detail'])): ?>
     <div id="userprofile" class="clearfix">
       <div id="userprofile-left">
         <p><img src="<?php echo h($userdetail['instagram_profile_picture']); ?>" width="140" height="140" alt="profile image"/></p>
@@ -247,9 +285,17 @@ $userdetail = $_SESSION['user_detail'][0];
       <div id="userprofile-right">
         <dl>
           <dt>fullname:</dt>
-          <dd><?php echo h($userdetail['full_name']); ?></dd>
+          <?php if( !empty($userdetail['full_name']) ) : ?>
+          	<dd><?php echo h($userdetail['full_name']); ?></dd>
+          <?php else: ?>
+          	<dd> ... </dd>
+          <?php endif; ?>
           <dt>biography:</dt>
-          <dd><?php echo h($userdetail['bio']); ?></dd>
+          <?php if( !empty($userdetail['bio']) ) : ?>
+          	<dd><?php echo h($userdetail['bio']); ?></dd>
+          <?php else: ?>
+          	<dd> ... </dd>
+          <?php endif; ?>
           <dt>website:</dt>
           <dd><a href="<?php echo h($userdetail['website']); ?>" target="_blank"><?php echo h($userdetail['website']); ?></a></dd>
         </dl>
@@ -298,6 +344,12 @@ $userdetail = $_SESSION['user_detail'][0];
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script> 
           <!-- /.ads--></div>
+        <?php if($_SESSION['cache']) : ?>
+				<div id="cacheMsg">
+					<p><i class="fa fa-info-circle"></i> このユーザーはStachoに登録していません。</p>
+					<p>現在100件のデータのみをキャッシュしております。このデータは24時間後に削除されます。</p>
+			</div>
+        <?php endif; ?>
 		<ul class="pager clearfix">
 			<?php if($page > 1) :?>
 				<li><a href="<?php echo prev_url_generator($page); ?>">&lt; prev</a></li>
@@ -320,19 +372,19 @@ $userdetail = $_SESSION['user_detail'][0];
 				<div class="item-box clearfix">
 					<?php if($data['video']): ?>
 						<div class="media">
-							<video controls width="170" height="170">
+							<video controls width="180" height="180">
 								<source src="<?php echo h($data['image_url']); ?>" />
 								<p>動画を再生するには、videoタグをサポートしたブラウザが必要です。</p>
 							</video>
 						<!-- /.media --></div>
 					<?php else : ?>
 						<div class="media">
-							<a href="<?php echo h($data['link']); ?>" target="_blank" ><img src="<?php echo h($data['image_url']); ?>" width="170" height="170" alt="media"/></a>
+							<a href="<?php echo h($data['link']); ?>" target="_blank" ><img src="<?php echo h($data['image_url']); ?>" width="180" height="180" alt="media"/></a>
 						<!-- /.media--></div>
 					<?php endif; ?>
 					<div class="description">
 						<h3><a href="<?php echo h($data['link']); ?>" target="_blank">posted at <?php echo h($data['created']); ?> <i class="fa fa-external-link"></i></a></h3>
-						<p><?php echo nl2br(h($data['caption'])); ?></p>
+						<p><?php echo nl2br(getCaptionWithLink($data['caption'],$userdetail['instagram_user_name'])); ?></p>
 					<!-- /.description--></div>
 				<!-- /.item-box --></div>
 			<?php endforeach; ?>
@@ -363,17 +415,6 @@ $userdetail = $_SESSION['user_detail'][0];
           <!-- /.ad2--></div>
         <!-- /#mainContents --></div>
       <div id="sidemenu"> 
-        <div class="item-box">
-          <h3>Search</h3>
-          <!--<p>searchbox<i class="fa fa-search"></i></p>-->
-          <form id="wsearch" onsubmit="validForm();return false;" method="get">
-          	<input type="hidden" value="<?php echo h($_GET['id']);?>" name="id"></input>
-            <input type="text" value="" name="word" maxlength="50">
-            </input>
-            <input type="submit" value="&#xf002;">
-            </input>
-          </form>
-          <!-- /.item-box --></div>
 		<div class="item-box"> 
 			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 			<!-- stacho_main_ad3 -->
@@ -385,6 +426,17 @@ $userdetail = $_SESSION['user_detail'][0];
 			(adsbygoogle = window.adsbygoogle || []).push({});
 			</script>
         <!-- /#sidemenu--></div>
+                <div class="item-box">
+          <h3>Search</h3>
+          <!--<p>searchbox<i class="fa fa-search"></i></p>-->
+          <form id="wsearch" onsubmit="validForm();return false;" method="get">
+          	<input type="hidden" value="<?php echo h($_GET['id']);?>" name="id"></input>
+            <input type="text" value="" name="word" maxlength="50">
+            </input>
+            <input type="submit" value="&#xf002;">
+            </input>
+          </form>
+          <!-- /.item-box --></div>
         <div class="item-box">
           <h3>Recent</h3>
 			<?php foreach($daily as $data) : ?>
@@ -401,10 +453,6 @@ $userdetail = $_SESSION['user_detail'][0];
         <div class="item-box">
           <h3>Monthly</h3>
 			<?php foreach($monthly as $data) : ?>
-				<!-- <?php if($cnt_monthly >= 10): ?>
-					<li><a href=""><?php echo h("もっと見る..."); ?></a></li>
-					<?php break; ?>
-				<?php endif; ?> -->
 				<?php if( !empty($_GET['mon']) && strcmp($data['created'],$_GET['mon']) === 0 ) : ?>
 					<p><a href="" class="active"><?php echo h($data['created']); ?> <span class="item-num"><?php echo h($data['count']); ?></span></a></p>
 				<?php else: ?>
@@ -427,7 +475,16 @@ $userdetail = $_SESSION['user_detail'][0];
           <!-- /.item-box --></div>
         <!-- /#sidemenu --></div>
       <!-- /#menu --></div>
-  </div>
+      <?php else : ?>
+      	<div id="nouser" style="min-height:200px;">
+      		<div id="noUser">
+      			<div id="boxAttention">
+					<p><i class="fa fa-instagram"></i> ユーザーが見つかりませんでした。</p>
+				</div>
+			</div>
+		</div>
+      <?php endif; ?>
+  <!-- /#container-inner --></div>
   <div id="footer">
     <div class="footer-inner">
       <ul class="clearfix">
@@ -437,7 +494,7 @@ $userdetail = $_SESSION['user_detail'][0];
         /
         <li><a>利用規約</a></li>
         /
-        <li><a id="delete-logdata" href="delete.php">全ログデータの削除</a></li>
+        <?php if(isMyPage()) : ?><li><a id="delete-logdata" href="delete.php">全ログデータの削除</a></li><?php endif; ?>
       </ul>
       <address>
       Copyright(C) 2015 simplestreet All rights Reserved.

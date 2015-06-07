@@ -89,7 +89,7 @@ if (empty($_SESSION['user'])){
   <div class="container-inner">
     <div id="main" class="clearfix">
       <div id="mainContents">
-        <p class="return"><a href="<?php echo h(SITE_URL."u/"); ?>"> &gt;&gt;<?php echo h($_SESSION['user']['instagram_user_name']); ?>のページへ戻る</a></p>
+        <p class="return"><a href="<?php echo h(SITE_URL."u/?id=".$_SESSION['user']['instagram_user_name']); ?>"> &gt;&gt;<?php echo h($_SESSION['user']['instagram_user_name']); ?>のページへ戻る</a></p>
         <ul id="tweets" class="clearfix">
           <?php foreach($json->data as $data): ?>
 			<li><a href="<?php echo $data->link; ?>" target="_blank"><img src="<?php echo $data->images->standard_resolution->url; ?>" width="280" height="280" alt="stacho image"/></a></li>

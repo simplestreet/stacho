@@ -39,7 +39,7 @@ if (empty($_GET['code'])){
 	$res = curl_exec($curl);
 	curl_close($curl);
 	$json = json_decode($res);
-
+	
 	//user情報の格納
 	try{
 		$dbh = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME,DB_USER,DB_PASSWORD);
@@ -65,13 +65,35 @@ if (empty($_GET['code'])){
 			":profile_picture" => $json->user->profile_picture,
 			":access_token" => $json->access_token
 		);
-		$stmt->execute($params);
+		$result= $stmt->execute($params);
+		if(!$result){
+			echo "hello";
+			exit;
+		}
 		//挿入したデータをひぱってくる
 		$stmt = $dbh->prepare("select * from users where
 		id=:last_insert_id limit 1");
 		$stmt->execute(array(":last_insert_id" => $dbh->lastInsertId()));
 		$user = $stmt->fetch();
+	} else {
+		$stmt = $dbh->prepare("update users set instagram_access_token = :access_token where instagram_user_name = :instagram_user_name");
+		$result = $stmt->execute(
+			array(":access_token" => $json->access_token,
+					":instagram_user_name" => $user['instagram_user_name']));
+		if(!$result){
+			echo "update error";
+			exit;
+		}
+		//挿入したデータをひぱってくる
+		$stmt = $dbh->prepare("select * from users where instagram_user_id= :instagram_user_id limit 1");
+		$result = $stmt->execute(array(":instagram_user_id" => $user['instagram_user_id']));
+		if(!$result){
+			echo "error:can not get the data";
+			exit;
+		}
+		$user = $stmt->fetch();
 	}
+	
 	//ログイン処理
 	if(!empty($user)){
 		session_regenerate_id(true);
@@ -101,6 +123,7 @@ if (empty($_GET['code'])){
 				":followed_by" => $data->counts->followed_by,
 				":instagram_user_id" => $data->id );
 	$stmt->execute($params);
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	// 1430652834 自分
@@ -134,12 +157,13 @@ if (empty($_GET['code'])){
 				$image_url = $data->images->standard_resolution->url;
 			}
 			$tags = ",".implode(",", $data->tags).",";
+			$textwithout4byte = preg_replace('/[\xF0-\xF7][\x80-\xBF][\x80-\xBF][\x80-\xBF]/', ' ', $data->caption->text);
 			$params = array(
 				":user_id" => $user_id, 
 				":image_id" => $data->id,
 				":image_url" => $image_url/*$data->images->standard_resolution->url*/,
 				":link" => $data->link,
-				":caption" => $data->caption->text,
+				":caption" => /*$data->caption->text*/$textwithout4byte,
 				":tags" => /*implode(",", $data->tags)*/$tags,
 				":video" => !empty($data->videos), 
 				":created" => date('Y-m-d H:i:s',$data->created_time)

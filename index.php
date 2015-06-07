@@ -18,11 +18,28 @@ function get_login_url(){
 <head>
 <meta charset="utf-8">
 <title>Stacho - Instagramをもっと便利に。。。</title>
+<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="css/lightbox.css" rel="stylesheet" type="text/css">
 <link href="css/base.css" rel="stylesheet" type="text/css">
 <link href="css/home.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="js/lightbox.min.js"></script>
+	<script type="text/javascript">
+		function validForm() {
+			var formElem = document.getElementsByName("searchId");
+			if( formElem[0].value == "" ) {
+				return false;
+			} else {
+				//ascii 一文字は検索対象としない。
+				if( unescape(encodeURIComponent(formElem[0].value)).length < 2) {
+				return false;
+				}
+				location.href = "./u/?id=" + formElem[0].value;
+				$('#loading').show();
+				return true;
+			}
+		}
+	</script>
 </head>
 <body>
 <script>
@@ -48,8 +65,19 @@ function get_login_url(){
   <div id="container-inner">
     <div id="main" class=" clearfix">
       <div id="home-left">
-        <p class="image-box"><a href="images/sample.png" data-lightbox="image-1" data-title="Stacho sample"><img src="images/sample.png" width="300" height="" alt="sample image"/></a></p>
+        <!-- <p class="image-box"><a href="images/sample.png" data-lightbox="image-1" data-title="Stacho sample"><img src="images/sample.png" width="300" height="" alt="sample image"/></a></p> -->
+		<p class="image-box"><a href="./u/?id=baffaro66"><img src="images/sample.png" width="300" height="" alt="sample image"/></a></p>
         <h1>StachoはInstagramをブログ形式に表示するサービスです。</h1>
+        <div id="user-search">
+        	<p>ログする前に、とりあえず使ってみたい方はこちらから。↓↓↓</p>
+			<form id="usearch" onsubmit="validForm();return false;" method="get">
+				<input type="text" value="" name="searchId" maxlength="50" placeholder="Instagram ID">
+				</input>
+				<input type="submit" value="&#xf007;">
+				</input>
+			</form>
+		</div>
+		<p id="loading"><i class="fa fa-refresh fa-spin fa-3x"></i> Now logging...it may take about 2 minutes</p>
       </div>
       <div id="home-right">
         <p><img src="images/stacho_logo.png" width="150" height="" alt="Stacho"/></p>

@@ -18,3 +18,17 @@ create table users(
 	modified datetime
 	);
 
+create table cache_users(
+	id int not null auto_increment primary key,
+	instagram_user_id int unique,
+	instagram_user_name varchar(255),
+	full_name varchar(255),
+	instagram_profile_picture varchar(255),
+	bio varchar(510),
+	website varchar(255),
+	media int,
+	follows int,
+	followed_by int,
+	created datetime,
+	modified datetime
+	);
