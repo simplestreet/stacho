@@ -414,7 +414,7 @@ if(isset($_SESSION['user_detail'])){
 </script> 
           <!-- /.ad2--></div>
         <!-- /#mainContents --></div>
-      <div id="sidemenu"> 
+      <div id="sidemenu">
 		<div class="item-box"> 
 			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 			<!-- stacho_main_ad3 -->
@@ -426,7 +426,7 @@ if(isset($_SESSION['user_detail'])){
 			(adsbygoogle = window.adsbygoogle || []).push({});
 			</script>
         <!-- /#sidemenu--></div>
-                <div class="item-box">
+		<div class="item-box">
           <h3>Search</h3>
           <!--<p>searchbox<i class="fa fa-search"></i></p>-->
           <form id="wsearch" onsubmit="validForm();return false;" method="get">
@@ -437,6 +437,14 @@ if(isset($_SESSION['user_detail'])){
             </input>
           </form>
           <!-- /.item-box --></div>
+      	<div class="item-box">
+      		<h3>Popular</h3>
+      		<p><a style="diplay:block;" href="./?id=fumio0728"><img src="https://instagramimages-a.akamaihd.net/profiles/profile_2823122_75sq_1374591049.jpg" width="50" height="50" /> No.1: * fumio *</a></p>
+      		<p><a style="diplay:block;" href="./?id=kikichiaki"><img src="https://igcdn-photos-f-a.akamaihd.net/hphotos-ak-xpf1/t51.2885-19/1660811_1562667210638157_346481196_a.jpg" width="50" height="50" /> No.2: 伊藤 千晃 （AAA）</a></p>
+      		<p><a style="diplay:block;" href="./?id=yuri_ebihara"><img src="https://instagramimages-a.akamaihd.net/profiles/profile_14204819_75sq_1374907016.jpg" width="50" height="50" /> No.3: YURI_EBIHARA</a></p>
+      		<p><a style="diplay:block;" href="./?id=nyanchan22"><img src="https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xap1/t51.2885-19/10684131_705357866178940_1655275906_a.jpg" width="50" height="50" /> No.4: Haruna Kojima</a></p>
+      		<p><a style="diplay:block;" href="./?id=yuk00shima"><img src="https://igcdn-photos-g-a.akamaihd.net/hphotos-ak-xfp1/t51.2885-19/10448839_502902489838630_130059946_a.jpg" width="50" height="50" /> No.5: yuk00shima</a></p>
+      	<!-- /.item-box --></div>
         <div class="item-box">
           <h3>Recent</h3>
 			<?php foreach($daily as $data) : ?>

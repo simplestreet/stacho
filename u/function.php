@@ -114,6 +114,18 @@ function get_userinfo_contents($dbh,$user_id,$cache_flag){
 		}
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/////Poplularの情報を取得/////////////////////////////////////////////////////////////////////////////
+	/*$popular_list = array();
+	$popular_names = array("fumio0728","kikichiaki","yuri_ebihara","nyanchan22","yuk00shima");
+	foreach($popular_names as $name){
+		$sql = "select from".$user_data." where ";
+		$popular_list[] = "";
+	}
+	exit;*/
+	/*$_SESSION['popular'] = ;*/
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 }
 function get_access_token($dbh){
 	$sql = "select count(*) from users";
