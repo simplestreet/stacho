@@ -82,7 +82,17 @@ body > #container {height:auto;}
 	background-color:#fff;
 	color:#1E98B9;
 }
-
+/*
+#home-right .login{
+	margin: 10px 0 60px;
+}
+#home-right .login a{
+	font-size:120%;
+	color : #fff;
+	text-decoration : none;
+	font-weight:bold;
+}
+*/
 #home-right ul li {
 	font-size:120%;
 	margin: 0 10px 10px;

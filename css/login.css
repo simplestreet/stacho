@@ -41,6 +41,7 @@ body > #container {height:auto;}
 	color:#fff;
 	font-size:110%;
 	border-radius:10px;
+	text-decoration:none;
 	-webkit-transition: 0.8s;
     -moz-transition: 0.8s;
     -o-transition: 0.8s;
