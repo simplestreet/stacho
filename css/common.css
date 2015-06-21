@@ -35,6 +35,9 @@ body > #container {height:auto;}
     -ms-transition: 0.8s;
     transition: 0.8s;
 }
+#header .header-inner p.logout{
+	background-color:#FFA400;
+}
 #header .header-inner p:hover{
 	background-color:#fff;
 }

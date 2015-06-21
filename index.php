@@ -2,6 +2,9 @@
 require_once('u/config.php');
 
 session_start();
+if(isset($_SESSION['user_detail'])){
+	unset($_SESSION['user_detail']);
+}
 function get_login_url(){
 	$ret = "";
 	if(empty($_SESSION['user'])){

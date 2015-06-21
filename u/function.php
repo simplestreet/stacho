@@ -150,19 +150,18 @@ function get_cachemedia_from_instagram( $dbh , $user_id , $access_token ){
 
 		if( $stmt->rowCount() > 0 ){
 			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			$url = "https://api.instagram.com/v1/users/".$user_id."/media/recent/?access_token=".$_SESSION['user']['instagram_access_token']."&min_id=".$result[0]["image_id"];
+			$url = "https://api.instagram.com/v1/users/".$user_id."/media/recent/?access_token=".$access_token."&min_id=".$result[0]["image_id"];
 		} else {
-			$url = "https://api.instagram.com/v1/users/".$user_id."/media/recent/?access_token=".$_SESSION['user']['instagram_access_token'];
+			$url = "https://api.instagram.com/v1/users/".$user_id."/media/recent/?access_token=".$access_token;
 		}
 		
 		//100件分のメディア情報の取得////////////////////////////////////////////////////////////////////
-		$url = "https://api.instagram.com/v1/users/".$user_id."/media/recent/?access_token=".$access_token;
+		//$url = "https://api.instagram.com/v1/users/".$user_id."/media/recent/?access_token=".$access_token;
 		$json = file_get_contents($url);
 		if( !$json ){
 			return false;
 		}
 		$json = json_decode($json);
-
 		for($count = 0; $count < 5; $count++){
 			foreach($json->data as $data){
 				$sql = "insert into cache_user_data(user_id,image_id,image_url,link,caption,tags,video,created) values(:user_id,
@@ -219,7 +218,6 @@ function get_userinfo($dbh,$user_name){
 	}else{ //本データベースにユーザー情報がない場合はキャッシュデータベースの確認
 		
 		$access_token = get_access_token($dbh);
-		
 		//キャッシュデータベースに存在するか確認
 		if($user_id = existCacheUserInfo($dbh,$user_name)){
 			/* 100件未満の場合データベースに情報を登録  */
@@ -279,45 +277,6 @@ function get_userinfo($dbh,$user_name){
 					}
 					return;
 				}
-				/*
-				$url = "https://api.instagram.com/v1/users/".$user_id."/media/recent/?access_token=".$access_token;
-				$json = file_get_contents($url);
-				$json = json_decode($json);
-	
-				for($count = 0; $count < 5; $count++){
-					foreach($json->data as $data){
-						$sql = "insert into cache_user_data(user_id,image_id,image_url,link,caption,tags,video,created) values(:user_id,
-							:image_id,:image_url,:link,:caption,:tags,:video,:created)";
-						$stmt = $dbh->prepare($sql);
-						if( !empty($data->videos) ) {
-							$image_url = $data->videos->standard_resolution->url;
-						} else {
-							$image_url = $data->images->standard_resolution->url;
-						}
-						$tags = ",".implode(",", $data->tags).",";
-						$textwithout4byte = preg_replace('/[\xF0-\xF7][\x80-\xBF][\x80-\xBF][\x80-\xBF]/', ' ', $data->caption->text);
-						$params = array(
-							":user_id" => $user_id, 
-							":image_id" => $data->id,
-							":image_url" => $image_url,
-							":link" => $data->link,
-							":caption" => $textwithout4byte,
-							":tags" => $tags,
-							":video" => !empty($data->videos), 
-							":created" => date('Y-m-d H:i:s',$data->created_time)
-							);
-						$stmt->execute($params);
-					}
-					if(!isset($json->pagination->next_url) ){
-						break;
-					}else{
-						time_nanosleep(0,300000); // 0.5秒
-						$url = $json->pagination->next_url;
-						$json = file_get_contents($url);
-						$json = json_decode($json);
-					}
-				}
-				*/
 				/////////////////////////////////////////////////////////////////////////////////////////////////
 				/* user情報の取得 */
 				get_userinfo_contents($dbh,$user_id,true);

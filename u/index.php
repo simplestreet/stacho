@@ -203,7 +203,8 @@ if(isset($_SESSION['user_detail'])){
 <html>
 <head>
 <meta charset="utf-8">
-<title>Stacho</title>
+<meta name="description" content="<?php echo h($userdetail['full_name']." : ".$userdetail['bio']." : ".$userdetail['website']) ?>">
+<title><?php echo h(!empty($userdetail['full_name']) ? $userdetail['full_name'] : $userdetail['instagram_user_name']);?><?php echo h(" さんのページ : ");?>Stacho - Instagramをブログ形式に...</title>
 <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="../css/base.css" rel="stylesheet" type="text/css">
 <link href="../css/common.css" rel="stylesheet" type="text/css">
@@ -267,7 +268,7 @@ if(isset($_SESSION['user_detail'])){
 		<?php if(!empty($_SESSION['user'])) :?>
 			<p><a href="logout.php">logout</a></p>
 		<?php else: ?>
-			<p><a href="<?php echo h(SITE_URL."u/login.php"); ?>">login</a></p>
+			<p class="logout"><a href="<?php echo h(SITE_URL."u/login.php"); ?>">logout 中  <i class="fa fa-sign-in"></i></a></p>
 		<?php endif; ?>
     </div>
     <!--		<p><?php echo h($_SERVER["REQUEST_URI"]); ?></p>
@@ -352,17 +353,24 @@ if(isset($_SESSION['user_detail'])){
         <?php endif; ?>
 		<ul class="pager clearfix">
 			<?php if($page > 1) :?>
-				<li><a href="<?php echo prev_url_generator($page); ?>">&lt; prev</a></li>
+				<li><a href="<?php echo prev_url_generator($page); ?>">&lt; 前のページ</a></li>
 			<?php else: ?>
-				<li class="nonactive"><a href="./">&lt; prev</a></li>
+				<li class="nonactive"><a href="./">&lt; 前のページ</a></li>
 			<?php endif; ?>
 			<li><a href="./<?php echo h("?id=".$userdetail['instagram_user_name']);?>"><?php echo h($userdetail['instagram_user_name']); ?></a></li>
 			<?php if($page < $totalPages): ?>
-				<li><a href="<?php echo next_url_generator($page); ?>">next &gt;</a></li>
+				<li><a href="<?php echo next_url_generator($page); ?>">次のページ &gt;</a></li>
 			<?php else: ?>
-				<li class="nonactive"><a href="./">next &gt;</a></li>
+				<li class="nonactive"><a href="./">次のページ &gt;</a></li>
 			<?php endif; ?>
 		</ul>
+		<div id="pageNumbers">
+			<?php if(!$total ) : ?>
+				<p><?php echo h('表示できるデータはありません。')?></p>
+			<?php else : ?>
+				<p><?php echo h($total.' 件中 '.$from.' から '.$to.' まで表示。')?></p>
+			<?php endif; ?>
+		</div>
 		<div id="medias">
 			<?php foreach ($result as $data) : ?>
 				<?php if(($ymddate = headline_display($data['created'])) != $GLOBALS['cnt_date'] ): ?>
@@ -391,15 +399,15 @@ if(isset($_SESSION['user_detail'])){
 		<!-- /#medias --></div>
 		<ul class="pager clearfix">
 			<?php if($page > 1) :?>
-				<li><a href="<?php echo prev_url_generator($page); ?>">&lt; prev</a></li>
+				<li><a href="<?php echo prev_url_generator($page); ?>">&lt; 前のページ</a></li>
 			<?php else: ?>
-				<li class="nonactive"><a href="./">&lt; prev</a></li>
+				<li class="nonactive"><a href="./">&lt; 前のページ</a></li>
 			<?php endif; ?>
 			<li><a href="./<?php echo h("?id=".$userdetail['instagram_user_name']);?>"><?php echo h($userdetail['instagram_user_name']); ?></a></li>
 			<?php if($page < $totalPages): ?>
-				<li><a href="<?php echo next_url_generator($page); ?>">next &gt;</a></li>
+				<li><a href="<?php echo next_url_generator($page); ?>">次のページ &gt;</a></li>
 			<?php else: ?>
-				<li class="nonactive"><a href="./">next &gt;</a></li>
+				<li class="nonactive"><a href="./">次のページ &gt;</a></li>
 			<?php endif; ?>
 		</ul>
         <div class="ad2"> 
@@ -440,10 +448,10 @@ if(isset($_SESSION['user_detail'])){
       	<div class="item-box">
       		<h3>Popular</h3>
       		<p><a style="diplay:block;" href="./?id=fumio0728"><img src="https://instagramimages-a.akamaihd.net/profiles/profile_2823122_75sq_1374591049.jpg" width="50" height="50" /> No.1: * fumio *</a></p>
-      		<p><a style="diplay:block;" href="./?id=kikichiaki"><img src="https://igcdn-photos-f-a.akamaihd.net/hphotos-ak-xpf1/t51.2885-19/1660811_1562667210638157_346481196_a.jpg" width="50" height="50" /> No.2: 伊藤 千晃 （AAA）</a></p>
-      		<p><a style="diplay:block;" href="./?id=yuri_ebihara"><img src="https://instagramimages-a.akamaihd.net/profiles/profile_14204819_75sq_1374907016.jpg" width="50" height="50" /> No.3: YURI_EBIHARA</a></p>
+      		<p><a style="diplay:block;" href="./?id=ren_ishikawa"><img src="https://igcdn-photos-d-a.akamaihd.net/hphotos-ak-xpf1/t51.2885-19/11049209_373057596216459_1243459042_a.jpg" width="50" height="50" /> No.2: Ren Ishikawa </a></p>
+      		<p><a style="diplay:block;" href="./?id=risayoshiki0727"><img src="https://igcdn-photos-f-a.akamaihd.net/hphotos-ak-xaf1/t51.2885-19/11355270_419414358241389_446231890_a.jpg" width="50" height="50" /> No.3: 吉木りさ</a></p>
       		<p><a style="diplay:block;" href="./?id=nyanchan22"><img src="https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xap1/t51.2885-19/10684131_705357866178940_1655275906_a.jpg" width="50" height="50" /> No.4: Haruna Kojima</a></p>
-      		<p><a style="diplay:block;" href="./?id=yuk00shima"><img src="https://igcdn-photos-g-a.akamaihd.net/hphotos-ak-xfp1/t51.2885-19/10448839_502902489838630_130059946_a.jpg" width="50" height="50" /> No.5: yuk00shima</a></p>
+      		<p><a style="diplay:block;" href="./?id=rena_takeda"><img src="https://igcdn-photos-g-a.akamaihd.net/hphotos-ak-xaf1/t51.2885-19/11352283_1593175177601654_1801387311_a.jpg" width="50" height="50" /> No.5: れなれな(武田玲奈)</a></p>
       	<!-- /.item-box --></div>
         <div class="item-box">
           <h3>Recent</h3>

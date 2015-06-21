@@ -94,7 +94,7 @@
 	text-decoration: none;
 	padding: 0 20px;
 	color: #fff;
-	line-height: 2em;
+	line-height: 3em;
 	font-weight: bold;
 	display:block;
 }
@@ -105,8 +105,6 @@
 	background-color:#D4DBDD;
 	pointer-events:none;
 }
-
-
 #mainContents #medias h2 {
 	font-size: 130%;
 	border-left: 10px solid #1E98B9;
@@ -301,4 +299,11 @@
 	display:none;
 	color:#1E98B9;
 	font-size:120%;
+}
+#pageNumbers{
+	margin-bottom : 10px;
+}
+#pageNumbers p{
+	font-size : 115%;
+	color : #008DB7;
 }
