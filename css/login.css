@@ -13,9 +13,10 @@ body > #container {height:auto;}
 }
 #mainContents #cautionlist {
 	margin-bottom:20px;
+	max-width:500px;
 }
 #mainContents #cautionlist li {
-	line-height:2.0em;
+	line-height:2.5em;
 	font-size:105%;
 }
 #mainContents #description {
@@ -28,9 +29,10 @@ body > #container {height:auto;}
 }
 #mainContents #description .button{
 	text-align:center;
-	width:230px;
+	width:300px;
 	line-height:3.0em;
-	margin:15px;
+	margin:30px 15px 15px;
+	font-size:150%;
 
 }
 #mainContents #description .button a {
