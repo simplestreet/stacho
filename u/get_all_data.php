@@ -17,12 +17,15 @@ try{
 }
 
 for( $i = 1  ; $i < $argc; $i++ ) {
-	if(!($user_id=existCacheUserInfo($dbh,$argv[$i]))) {
+	/*if(!($user_id=existCacheUserInfo($dbh,$argv[$i]))) {
+		continue;
+	}*/
+	if(!($user_id=existUserInfo($dbh,$argv[$i]))) {
 		continue;
 	}
-	/* echo $argv[$i]." : ".$user_id."\n"; */
+	echo $argv[$i]." : ".$user_id."\n";
 	$access_token = get_access_token($dbh);
-	$sql = "select user_id,image_id,created from cache_user_data where user_id = :user_id order by created asc limit 1";
+	$sql = "select user_id,image_id,created from user_data where user_id = :user_id order by created asc limit 1";
 	$stmt = $dbh->prepare($sql);
 	$stmt->execute(array(":user_id" => $user_id));
 	
@@ -39,9 +42,9 @@ for( $i = 1  ; $i < $argc; $i++ ) {
 	}
 	$json = json_decode($json);
 	
-	for($count = 0; $count < 30; $count++){
+	for($count = 0; $count < 120; $count++){
 		foreach($json->data as $data){
-			$sql = "insert into cache_user_data(user_id,image_id,image_url,link,caption,tags,video,created) values(:user_id,
+			$sql = "insert into user_data(user_id,image_id,image_url,link,caption,tags,video,created) values(:user_id,
 				:image_id,:image_url,:link,:caption,:tags,:video,:created)";
 			$stmt = $dbh->prepare($sql);
 			$image_url = "";

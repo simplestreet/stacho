@@ -15,7 +15,7 @@ $sql = "select instagram_user_name,instagram_user_id,instagram_access_token,crea
 $stmt = $dbh->query($sql);
 
 foreach($stmt as $row){
-	$sql = "select user_id,image_id,created from cache_user_data where user_id = :user_id order by created desc limit 1";
+	$sql = "select user_id,image_id,created from user_data where user_id = :user_id order by created desc limit 1";
 	$stmt_in = $dbh->prepare($sql);
 	$result = $stmt_in->execute(array(":user_id" => $row['instagram_user_id']));
 
