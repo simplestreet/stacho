@@ -447,11 +447,11 @@ if(isset($_SESSION['user_detail'])){
           <!-- /.item-box --></div>
       	<div class="item-box">
       		<h3>Popular</h3>
-      		<p><a style="diplay:block;" href="./?id=fumio0728"><img src="https://instagramimages-a.akamaihd.net/profiles/profile_2823122_75sq_1374591049.jpg" width="50" height="50" /> No.1: * fumio *</a></p>
-      		<p><a style="diplay:block;" href="./?id=ren_ishikawa"><img src="https://igcdn-photos-d-a.akamaihd.net/hphotos-ak-xpf1/t51.2885-19/11049209_373057596216459_1243459042_a.jpg" width="50" height="50" /> No.2: Ren Ishikawa </a></p>
-      		<p><a style="diplay:block;" href="./?id=risayoshiki0727"><img src="https://igcdn-photos-f-a.akamaihd.net/hphotos-ak-xaf1/t51.2885-19/11355270_419414358241389_446231890_a.jpg" width="50" height="50" /> No.3: 吉木りさ</a></p>
-      		<p><a style="diplay:block;" href="./?id=nyanchan22"><img src="https://igcdn-photos-e-a.akamaihd.net/hphotos-ak-xap1/t51.2885-19/10684131_705357866178940_1655275906_a.jpg" width="50" height="50" /> No.4: Haruna Kojima</a></p>
-      		<p><a style="diplay:block;" href="./?id=rena_takeda"><img src="https://igcdn-photos-g-a.akamaihd.net/hphotos-ak-xaf1/t51.2885-19/11352283_1593175177601654_1801387311_a.jpg" width="50" height="50" /> No.5: れなれな(武田玲奈)</a></p>
+			<p><a style="diplay:block;" href="./?id=fumio0728"><img src="https://scontent.cdninstagram.com/t51.2885-19/11356963_944897168899676_624049051_a.jpg" width="50" height="50" /> No.1: * fumio *</a></p>
+      		<p><a style="diplay:block;" href="./?id=ren_ishikawa"><img src="https://scontent.cdninstagram.com/t51.2885-19/s150x150/12237299_1511394995824428_1238920557_a.jpg" width="50" height="50" /> No.2: Ren Ishikawa </a></p>
+      		<p><a style="diplay:block;" href="./?id=risayoshiki0727"><img src="https://scontent.cdninstagram.com/t51.2885-19/s150x150/12132753_1504254776539510_2130874453_a.jpg" width="50" height="50" /> No.3: 吉木りさ</a></p>
+      		<p><a style="diplay:block;" href="./?id=nyanchan22"><img src="https://scontent.cdninstagram.com/t51.2885-19/10684131_705357866178940_1655275906_a.jpg" width="50" height="50" /> No.4: Haruna Kojima</a></p>
+      		<p><a style="diplay:block;" href="./?id=rena_takeda"><img src="https://scontent.cdninstagram.com/t51.2885-19/s150x150/12224269_778596578953298_518137445_a.jpg" width="50" height="50" /> No.5: れなれな(武田玲奈)</a></p>
       	<!-- /.item-box --></div>
         <div class="item-box">
           <h3>Recent</h3>
